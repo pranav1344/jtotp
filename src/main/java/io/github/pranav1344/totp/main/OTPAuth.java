@@ -6,6 +6,7 @@ import io.github.pranav1344.totp.util.SecretGenerator;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.util.Scanner;
 
 
 public class OTPAuth {
@@ -25,7 +26,7 @@ public class OTPAuth {
                 uriEncode(label) + "?" +
                 "secret=" + uriEncode(secret) +
                 "&issuer=" + uriEncode(issuer) +
-                "&algorithm=" + uriEncode("SHA256") +
+                "&algorithm=" + uriEncode("SHA1") +
                 "&digits=" + digits +
                 "&period=" + timeWindow;
     }

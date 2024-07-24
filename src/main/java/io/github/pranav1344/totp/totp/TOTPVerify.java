@@ -3,8 +3,12 @@ package io.github.pranav1344.totp.totp;
 
 public class TOTPVerify {
     public static boolean verify(String secret, int digits, int timewindow, String input) {
-        String totp = TOTPGenerator.getTOTP(secret, digits, timewindow);
-        return compareStrings(totp, input, digits);
+        String totp[] = TOTPGenerator.getTOTP(secret, digits, timewindow);
+        boolean re = false;
+        for(String i : totp) {
+            re = re || TOTPVerify.compareStrings(input, i, digits);
+        }
+        return re;
     }
     private static boolean compareStrings(String input1, String input2, int digits) {
         boolean ans = true;
