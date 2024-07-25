@@ -6,9 +6,9 @@
 
     <groupId>io.github.pranav1344</groupId>
     <artifactId>jtotp</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
     <description>
-        TOTP generator for java using SHA256 Hashing Algorithm.
+        TOTP generator for java using SHA1/SHA256 Hashing Algorithm.
     </description>
 
     <name>jtotp</name>

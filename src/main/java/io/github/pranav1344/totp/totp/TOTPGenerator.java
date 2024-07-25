@@ -12,15 +12,15 @@ import javax.crypto.spec.SecretKeySpec;
 public class TOTPGenerator {
     private static final int[] DIGITS_POWER
      = {1,10,100,1000,10000,100000,1000000,10000000,100000000 };
-    private static byte[] GenerateSHAHash(String secret, long timer) throws NoSuchAlgorithmException, InvalidKeyException {
-        Mac messagecode = Mac.getInstance("HmacSHA1");
+    private static byte[] GenerateSHAHash(String secret, long timer, String algorithm) throws NoSuchAlgorithmException, InvalidKeyException {
+        Mac messagecode = algorithm.equals("SHA1") ? Mac.getInstance("HmacSHA1") : Mac.getInstance("HmacSHA256");
         byte[] secretInByte = Base32.decode(secret);
         byte[] data = new byte[8];
         long value = timer;
         for (int i = 8; i-- > 0; value >>>= 8) {
             data[i] = (byte) value;
         }
-        messagecode.init(new SecretKeySpec(secretInByte, "SHA1"));
+        messagecode.init(new SecretKeySpec(secretInByte, algorithm.equals("SHA1") ? "SHA1" : "SHA-256"));
         return messagecode.doFinal(data);
     }
     
@@ -33,10 +33,10 @@ public class TOTPGenerator {
         binary %= DIGITS_POWER[digits];
         return String.format("%0" + digits + "d", binary);
     }
-    public static String[] getTOTP(String secret, int digits, int timeWindow) {
+    public static String[] getTOTP(String secret, int digits, int timeWindow, String algorithm) {
         long currentTimeWindow = Math.floorDiv(Instant.now().getEpochSecond(), timeWindow);
         try {
-            return  new String[]{getCodeFromHash(GenerateSHAHash(secret, currentTimeWindow - 1), digits), getCodeFromHash(GenerateSHAHash(secret, currentTimeWindow), digits), getCodeFromHash(GenerateSHAHash(secret, currentTimeWindow + 1), digits)};
+            return  new String[]{getCodeFromHash(GenerateSHAHash(secret, currentTimeWindow - 1, algorithm), digits), getCodeFromHash(GenerateSHAHash(secret, currentTimeWindow, algorithm), digits), getCodeFromHash(GenerateSHAHash(secret, currentTimeWindow + 1, algorithm), digits)};
         } catch (InvalidKeyException | NoSuchAlgorithmException ex) {
             throw new RuntimeException("Error while generating OTP", ex);
         }
